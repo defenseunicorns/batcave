@@ -1,0 +1,67 @@
+# -- Single set of registry credentials used to pull all images deployed by BigBang.
+registryCredentials:
+  registry: registry1.dso.mil
+  username: ""
+  password: ""
+  email: ""
+
+flux:
+  timeout: 10m
+  interval: 2m
+  test:
+    enable: false
+  install:
+    remediation:
+      retries: -1
+  upgrade:
+    remediation:
+      retries: 3
+      remediateLastFailure: true
+    cleanupOnFail: true
+  rollback:
+    timeout: 10m
+    cleanupOnFail: true
+
+git:
+  # -- Existing secret to use for git credentials, must be in the appropriate format: https://toolkit.fluxcd.io/components/source/gitrepositories/#https-authentication
+  existingSecret: ""
+
+  # -- Chart created secrets with user defined values
+  credentials:
+    # -- HTTP git credentials, both username and password must be provided
+    username: ""
+    password: ""
+    # -- HTTPS certificate authority file.  Required for any repo with a self signed certificate
+    caFile: ""
+    # -- SSH git credentials, privateKey, publicKey, and knownHosts must be provided
+    privateKey: ""
+    publicKey: ""
+    knownHosts: ""
+
+bigbang:
+  enabled: true
+  git:
+    tag: 1.29.0
+    repo: https://repo1.dso.mil/platform-one/big-bang/bigbang.git
+    path: "./chart"
+  flux: {}
+  values: {}
+
+neuvector:
+  enabled: true
+  git:
+    tag: 1.91-bb.0
+    repo: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/neuvector
+    path: "./chart"
+  flux: {}
+  values: {}
+
+dependencytrack:
+  enabled: true
+  git: 
+    # tag: 
+    branch: getting-sorted-out
+    repo: https://repo1.dso.mil/platform-one/big-bang/apps/sandbox/dependency-track.git
+    path: "./chart"
+  flux: {}
+  values: {}

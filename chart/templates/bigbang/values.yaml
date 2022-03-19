@@ -1,0 +1,59 @@
+{{- if .Values.bigbang.enabled }}
+{{- include "values-secret" (dict "root" $ "package" .Values.bigbang "name" "bigbang" "defaults" (include "bigbang.defaults.bigbang" .)) }}
+{{- end }}
+
+{{- define "bigbang.defaults.bigbang" -}}
+# hostname is deprecated and replaced with domain. But if hostname exists then use it.
+{{- $domainName := default .Values.domain .Values.hostname }}
+domain: {{ $domainName }}
+
+# -- Single set of registry credentials used to pull all images deployed by BigBang.
+registryCredentials:
+  registry: registry1.dso.mil
+  username: {{ .Values.registryCredentials.username }}
+  password: {{ .Values.registryCredentials.password }}
+  email: {{ .Values.registryCredentials.email }}
+
+# turn off twistlock to support neuvector
+twistlock:
+  enabled: false
+
+loki:
+  enabled: true
+
+promtail:
+  enabled: true
+
+logging:
+  enabled: false
+
+gatekeeper:
+  values:
+    # turn off controls for neuvector namespace
+    values:
+      violations:
+        allowedHostFilesystem:
+          parameters:
+            excludedResources:
+            - monitoring/monitoring-monitoring-prometheus-node-exporter-.*
+            - logging/logging-promtail-.*
+            - neuvector/.*
+        hostNetworking:
+          parameters:
+            excludedResources:
+              - neuvector/.*
+        noHostNamespace:
+          parameters:
+            excludedResources:
+            - neuvector/.*
+        selinuxPolicy:
+          parameters:
+            - logging/promtail
+            - neuvector/enforcers
+        volumeTypes:
+          parameters:
+            excludedResources:
+            - monitoring/monitoring-monitoring-prometheus-node-exporter-.*
+            - logging/logging-promtail-.*
+            - neuvector/.*
+{{- end }}

@@ -1,0 +1,21 @@
+{{- if .Values.neuvector.enabled }}
+{{- include "values-secret" (dict "root" $ "package" .Values.neuvector "name" "neuvector" "defaults" (include "bigbang.defaults.neuvector" .)) }}
+{{- end }}
+
+{{- define "bigbang.defaults.neuvector" -}}
+# hostname is deprecated and replaced with domain. But if hostname exists then use it.
+{{- $domainName := default .Values.domain .Values.hostname }}
+hostname: {{ $domainName }}
+domain: {{ $domainName }}
+
+prometheus:
+  servicemonitor:
+    enabled: true
+
+imagePullSecrets:
+- name: private-registry
+
+istio:
+  enabled: true
+
+{{- end -}}

@@ -1,0 +1,14 @@
+{{- if .Values.bigbang.enabled  }}
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: bigbang
+  namespace: {{ .Release.Namespace }}
+spec:
+  interval: {{ .Values.flux.interval }}
+  url: {{ .Values.bigbang.git.repo }}
+  ref:
+    {{- include "validRef" .Values.bigbang.git | nindent 4 }}
+  {{ include "gitIgnore" . }}
+  {{- include "gitCreds" . | nindent 2 }}
+{{- end }}

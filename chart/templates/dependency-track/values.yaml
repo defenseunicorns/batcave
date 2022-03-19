@@ -1,0 +1,27 @@
+{{- if .Values.dependencytrack.enabled }}
+{{- include "values-secret" (dict "root" $ "package" .Values.dependencytrack "name" "dependencytrack" "defaults" (include "bigbang.defaults.dependencytrack" .)) }}
+{{- end }}
+
+{{- define "bigbang.defaults.dependencytrack" -}}
+# hostname is deprecated and replaced with domain. But if hostname exists then use it.
+{{- $domainName := default .Values.domain .Values.hostname }}
+hostname: {{ $domainName }}
+domain: {{ $domainName }}
+
+prometheus:
+  servicemonitor:
+    enabled: true
+
+imagePullSecrets:
+- name: private-registry
+
+networkPolicies:
+  enabled: true
+
+monitoring:
+  enabled: true
+istio:
+  enabled: true
+
+
+{{- end -}}

@@ -1,0 +1,18 @@
+{{- if and (not .Values.offline) .Values.dependencytrack.enabled }}
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: dependencytrack
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: dependencytrack
+    app.kubernetes.io/component: "security"
+    {{- include "commonLabels" . | nindent 4}}
+spec:
+  interval: {{ .Values.flux.interval }}
+  url: {{ .Values.dependencytrack.git.repo }}
+  ref:
+    {{- include "validRef" .Values.dependencytrack.git | nindent 4 }}
+  {{ include "gitIgnore" . }}
+  {{- include "gitCreds" . | nindent 2 }}
+{{- end }}

@@ -1,0 +1,11 @@
+{{- if .Values.dependencytrack.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dependencytrack
+  labels:
+    app.kubernetes.io/name: dependencytrack
+    app.kubernetes.io/component: "security"
+    {{- include "commonLabels" . | nindent 4}}
+    istio-injection: enabled
+{{- end }}

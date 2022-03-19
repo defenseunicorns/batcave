@@ -1,0 +1,11 @@
+{{- if .Values.bigbang.enabled }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: bigbang
+  labels:
+    app.kubernetes.io/name: bigbang
+    app.kubernetes.io/component: "bigbang"
+    {{- include "commonLabels" . | nindent 4}}
+    istio-injection: enabled
+{{- end }}
